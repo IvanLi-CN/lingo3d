@@ -7,11 +7,12 @@ preventTreeShake(h)
 type MenuItemProps = {
     disabled?: boolean
     onClick?: () => void
+    onPointerDown?: () => void
     setData: ((val: any) => void) | undefined
     children: string
 }
 
-const MenuItem = ({ disabled, onClick, setData, children }: MenuItemProps) => {
+const MenuItem = ({ disabled, onClick, onPointerDown, setData, children }: MenuItemProps) => {
     const [hover, setHover] = useState(false)
 
     return (
@@ -28,6 +29,7 @@ const MenuItem = ({ disabled, onClick, setData, children }: MenuItemProps) => {
             }
             onMouseEnter={disabled ? undefined : () => setHover(true)}
             onMouseLeave={disabled ? undefined : () => setHover(false)}
+            onPointerDown={onPointerDown}
         >
             {children}
         </div>

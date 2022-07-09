@@ -36,24 +36,26 @@ const Node = ({ x = 0, y = 0 }: NodeProps) => {
         <div
             style={{
                 overflow: "hidden",
-                width: 300,
+                width: 240,
                 height: 300,
                 background: "rgba(0, 0, 0, 0.5)",
                 position: "absolute",
                 left: x,
-                top: y,
-                overflowY: "scroll"
+                top: y
             }}
         >
             <div
-             style={{ background: "rgba(255, 255, 255, 0.5)" }}
-             onPointerDown={e => {
-                e.stopPropagation()
-             }}
+                style={{ background: "rgba(255, 255, 255, 0.5)" }}
+                onPointerDown={(e) => {
+                    e.stopPropagation()
+                }}
             >
                 drag me!
             </div>
-            <div ref={tweakpaneDivRef} />
+            <div
+                ref={tweakpaneDivRef}
+                style={{ height: "285px", overflowY: "scroll" }}
+            />
         </div>
     )
 }

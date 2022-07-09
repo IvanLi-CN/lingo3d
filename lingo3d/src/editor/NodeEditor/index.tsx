@@ -67,7 +67,7 @@ const NodeEditor = () => {
             >
                 <div style={{ left, top, position: "absolute" }}>
                     <Node x={0} y={0} />
-                    <Node x={220} y={0} />
+                    <Node x={260} y={0} />
                 </div>
             </div>
             <ContextMenu data={data} setData={setData}>

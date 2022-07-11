@@ -83,12 +83,7 @@ const Node = ({ x = 0, y = 0, onClick }: NodeProps) => {
             >
                 <div
                     ref={movableEl}
-                    style={{
-                        width: "90%",
-                        height: "100%",
-                        display: "flex",
-                        alignItems: "center"
-                    }}
+                    style={{ height: "100%", width: "100%", background: "yellow" }}
                     onPointerDown={(e) => {
                         e.stopPropagation()
                         setPointerDown(true)
@@ -98,9 +93,6 @@ const Node = ({ x = 0, y = 0, onClick }: NodeProps) => {
                         if (!pointerDown) return
                         setLeft(left + e.movementX)
                         setTop(top + e.movementY)
-                    }}
-                    onMouseOut={() => {
-                        setPointerDown(false)
                     }}
                 >
                     drag me!

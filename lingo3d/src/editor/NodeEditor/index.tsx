@@ -8,6 +8,7 @@ import ContextMenu from "../ContextMenu"
 import MenuItem from "../ContextMenu/MenuItem"
 import { useEffect } from "react"
 import { nanoid } from "nanoid"
+import Bezier from "./Bezier"
 
 preventTreeShake(h)
 
@@ -15,11 +16,6 @@ type Data = {
     x: number
     y: number
     menuItems: Array<{ text: string; onClick?: () => void }>
-}
-
-type NodeData = {
-    x: number
-    y: number
 }
 
 let disablePointerDown = false

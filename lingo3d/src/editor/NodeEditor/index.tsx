@@ -6,6 +6,8 @@ import Node from "./Node"
 import { useState } from "preact/hooks"
 import ContextMenu from "../ContextMenu"
 import MenuItem from "../ContextMenu/MenuItem"
+import { useEffect } from "react"
+import { nanoid } from "nanoid"
 
 preventTreeShake(h)
 
@@ -15,6 +17,11 @@ type Data = {
     menuItems: Array<{ text: string; onClick?: () => void }>
 }
 
+type NodeData = {
+    x: number
+    y: number
+}
+
 let disablePointerDown = false
 
 const NodeEditor = () => {
@@ -22,6 +29,22 @@ const NodeEditor = () => {
     const [left, setLeft] = useState(0)
     const [top, setTop] = useState(0)
     const [data, setData] = useState<Data | undefined>()
+    const [nodes, setNodes] = useState<
+        Array<{ id: string; x: number; y: number }>
+    >([])
+
+    const addNode = (x: number, y: number) => {
+        setNodes([...nodes, { x, y, id: nanoid() }])
+    }
+
+    const removeNode = (id: string) => {
+        setNodes(nodes.filter((node) => node.id !== id))
+    }
+
+    useEffect(() => {
+        if (!nodes) return
+        console.log(nodes, "rendered")
+    }, [nodes])
 
     return (
         <Fragment>
@@ -33,12 +56,12 @@ const NodeEditor = () => {
                     height: "100%",
                     background: "rgb(40, 41, 46)"
                 }}
-                onPointerDown={() =>
+                onPointerDown={(e) => {
                     setTimeout(() => {
                         if (disablePointerDown) return
                         setPointerDown(true)
                     })
-                }
+                }}
                 onPointerUp={() => setPointerDown(false)}
                 onPointerMove={(e) => {
                     if (!pointerDown) return
@@ -47,6 +70,7 @@ const NodeEditor = () => {
                 }}
                 onContextMenu={(e) => {
                     e.preventDefault()
+                    e.stopPropagation()
 
                     disablePointerDown = true
                     setTimeout(() => (disablePointerDown = false))
@@ -57,17 +81,22 @@ const NodeEditor = () => {
                         menuItems: [
                             {
                                 text: "Create Cube Node",
-                                onClick: () => {
-                                    console.log("first button clicked")
-                                }
+                                onClick: () =>
+                                    addNode(e.clientX - 300, e.clientY)
                             }
                         ]
                     })
                 }}
             >
                 <div style={{ left, top, position: "absolute" }}>
-                    <Node x={0} y={0} />
-                    <Node x={260} y={0} />
+                    {nodes.map((node) => (
+                        <Node
+                            key={node.id}
+                            x={node.x}
+                            y={node.y}
+                            onClick={() => removeNode(node.id)}
+                        />
+                    ))}
                 </div>
             </div>
             <ContextMenu data={data} setData={setData}>

@@ -21,13 +21,14 @@ type Data = {
     menuItems: Array<{ text: string; onClick?: () => void }>
 }
 
+let captured = false
+
 const Node = ({ x = 0, y = 0, onClick }: NodeProps) => {
-    const [pointerDown, setPointerDown] = useState(false)
-    const [left, setLeft] = useState(x)
-    const [top, setTop] = useState(y)
     const tweakpaneDivRef = useRef<HTMLDivElement>(null)
     const movableEl = useRef<HTMLDivElement>(null)
     const [data, setData] = useState<Data | undefined>()
+    const [left, setLeft] = useState(x)
+    const [top, setTop] = useState(y)
 
     useEffect(() => {
         const el = tweakpaneDivRef.current
@@ -47,6 +48,36 @@ const Node = ({ x = 0, y = 0, onClick }: NodeProps) => {
 
     return (
         <div
+            style={{
+                overflow: "hidden",
+                width: 240,
+                height: 300,
+                background: "rgba(0, 0, 0, 0.5)",
+                position: "absolute",
+                left: left,
+                top: top,
+                zIndex: 999
+            }}
+            ref={movableEl}
+            onPointerDown={(e) => {
+                e.stopPropagation()
+                if (!captured) {
+                    movableEl.current?.setPointerCapture(e.pointerId)
+                    captured = true
+                }
+            }}
+            onPointerUp={(e) => {
+                if (captured) {
+                    movableEl.current?.releasePointerCapture(e.pointerId)
+                    captured = false
+                }
+            }}
+            onPointerMove={(e) => {
+                if (captured) {
+                    setLeft(left + e.movementX)
+                    setTop(top + e.movementY)
+                }
+            }}
             onContextMenu={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
@@ -61,16 +92,6 @@ const Node = ({ x = 0, y = 0, onClick }: NodeProps) => {
                     ]
                 })
             }}
-            style={{
-                overflow: "hidden",
-                width: 240,
-                height: 300,
-                background: "rgba(0, 0, 0, 0.5)",
-                position: "absolute",
-                left: left,
-                top: top,
-                zIndex: 999
-            }}
         >
             <div
                 style={{
@@ -82,17 +103,10 @@ const Node = ({ x = 0, y = 0, onClick }: NodeProps) => {
                 }}
             >
                 <div
-                    ref={movableEl}
-                    style={{ height: "100%", width: "100%", background: "yellow" }}
-                    onPointerDown={(e) => {
-                        e.stopPropagation()
-                        setPointerDown(true)
-                    }}
-                    onPointerUp={() => setPointerDown(false)}
-                    onPointerMove={(e) => {
-                        if (!pointerDown) return
-                        setLeft(left + e.movementX)
-                        setTop(top + e.movementY)
+                    style={{
+                        height: "100%",
+                        width: "100%",
+                        background: "yellow"
                     }}
                 >
                     drag me!

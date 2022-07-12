@@ -6,7 +6,6 @@ import Node from "./Node"
 import { useState } from "preact/hooks"
 import ContextMenu from "../ContextMenu"
 import MenuItem from "../ContextMenu/MenuItem"
-import { useEffect } from "react"
 import { nanoid } from "nanoid"
 import Bezier from "./Bezier"
 
@@ -36,11 +35,6 @@ const NodeEditor = () => {
     const removeNode = (id: string) => {
         setNodes(nodes.filter((node) => node.id !== id))
     }
-
-    useEffect(() => {
-        if (!nodes) return
-        console.log(nodes, "rendered")
-    }, [nodes])
 
     return (
         <Fragment>

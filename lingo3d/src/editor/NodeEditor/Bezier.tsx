@@ -17,9 +17,10 @@ const Bezier = ({ startPoint, endPoint }: BezierProps) => {
             style={{ position: "absolute", left: x0, top: y0, width, height }}
             viewBox={`0 0 ${width} ${height}`}
             className="z-50 absfull pointer-events-none"
+            ref={console.log}
         >
             <path
-                d={`M ${startPoint} C ${controlPoint0} ${controlPoint1} ${endPoint}`}
+                d={`M ${[0, 0]} C ${controlPoint0} ${controlPoint1} ${[width, height]}`}
                 // strokeDashoffset={p.offset}
                 // strokeDasharray={offset}
                 stroke="white"

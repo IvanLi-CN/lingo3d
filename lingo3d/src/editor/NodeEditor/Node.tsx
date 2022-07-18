@@ -14,6 +14,8 @@ type NodeProps = {
     x?: number
     y?: number
     onClick: () => void
+    onDragStart?: (start: { clientX: number, clientY: number }, current: { clientX: number, clientY: number }) => void,
+    onDragMove?: (start: { clientX: number, clientY: number }, current: { clientX: number, clientY: number }) => void
 }
 type Data = {
     x: number
@@ -23,7 +25,7 @@ type Data = {
 
 let captured = false
 
-const Node = ({ x = 0, y = 0, onClick }: NodeProps) => {
+const Node = ({ x = 0, y = 0, onClick, onDragStart, onDragMove }: NodeProps) => {
     const tweakpaneDivRef = useRef<HTMLDivElement>(null)
     const movableEl = useRef<HTMLDivElement>(null)
     const [data, setData] = useState<Data | undefined>()
@@ -38,7 +40,7 @@ const Node = ({ x = 0, y = 0, onClick }: NodeProps) => {
         const handle = new Cancellable()
 
         const cube = new Cube()
-        addObjectInputs(cube, pane, handle)
+        addObjectInputs(cube, pane, handle, onDragStart, onDragMove)
 
         return () => {
             pane.dispose()

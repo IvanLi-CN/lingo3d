@@ -3,7 +3,7 @@ import register from "preact-custom-element"
 import { preventTreeShake } from "@lincode/utils"
 import { useNodeEditor } from "../states"
 import Node from "./Node"
-import { useState } from "preact/hooks"
+import { useEffect, useMemo, useRef, useState } from "preact/hooks"
 import ContextMenu from "../ContextMenu"
 import MenuItem from "../ContextMenu/MenuItem"
 import { nanoid } from "nanoid"
@@ -36,10 +36,29 @@ const NodeEditor = () => {
         setNodes(nodes.filter((node) => node.id !== id))
     }
 
+    const divRef = useRef<HTMLDivElement>(null)
+    const [divPos, setDivPos] = useState({ left: 0, top: 0 })
+
+    useEffect(() => {
+        const div = divRef.current
+        if (!div) return
+
+        const bounds = div.getBoundingClientRect()
+        setDivPos({ left: bounds.left, top: bounds.top })
+    }, [])
+
+    const [dragging, setDragging] = useState<
+        { clientX: number; clientY: number } | undefined
+    >(undefined)
+    const [dragStart, setDragStart] = useState<
+        { clientX: number; clientY: number } | undefined
+    >(undefined)
+
     return (
         <Fragment>
             <div
                 className="lingo3d-ui"
+                ref={divRef}
                 style={{
                     overflow: "hidden",
                     width: 500,
@@ -72,7 +91,10 @@ const NodeEditor = () => {
                             {
                                 text: "Create Cube Node",
                                 onClick: () =>
-                                    addNode(e.clientX - 300, e.clientY)
+                                    addNode(
+                                        e.clientX - divPos.left,
+                                        e.clientY - divPos.top
+                                    )
                             }
                         ]
                     })
@@ -85,8 +107,26 @@ const NodeEditor = () => {
                             x={node.x}
                             y={node.y}
                             onClick={() => removeNode(node.id)}
+                            onDragStart={(start, current) =>
+                                setDragStart({
+                                    clientX: start.clientX - divPos.left,
+                                    clientY: start.clientY - divPos.top
+                                })
+                            }
+                            onDragMove={(start, current) =>
+                                setDragging({
+                                    clientX: current.clientX - divPos.left,
+                                    clientY: current.clientY - divPos.top
+                                })
+                            }
                         />
                     ))}
+                    {dragging && dragStart && (
+                        <Bezier
+                            startPoint={[dragStart.clientX, dragStart.clientY]}
+                            endPoint={[dragging.clientX, dragging.clientY]}
+                        />
+                    )}
                 </div>
             </div>
             <ContextMenu data={data} setData={setData}>

@@ -8,6 +8,7 @@ import ContextMenu from "../ContextMenu"
 import MenuItem from "../ContextMenu/MenuItem"
 import { nanoid } from "nanoid"
 import Bezier from "./Bezier"
+import { Arrow } from "react-absolute-svg-arrows"
 
 preventTreeShake(h)
 
@@ -48,10 +49,10 @@ const NodeEditor = () => {
     }, [])
 
     const [dragging, setDragging] = useState<
-        { clientX: number; clientY: number } | undefined
+        { x: number; y: number } | undefined
     >(undefined)
     const [dragStart, setDragStart] = useState<
-        { clientX: number; clientY: number } | undefined
+        { x: number; y: number } | undefined
     >(undefined)
 
     return (
@@ -109,23 +110,20 @@ const NodeEditor = () => {
                             onClick={() => removeNode(node.id)}
                             onDragStart={(start, current) =>
                                 setDragStart({
-                                    clientX: start.clientX - divPos.left,
-                                    clientY: start.clientY - divPos.top
+                                    x: start.clientX - divPos.left,
+                                    y: start.clientY - divPos.top
                                 })
                             }
                             onDragMove={(start, current) =>
                                 setDragging({
-                                    clientX: current.clientX - divPos.left,
-                                    clientY: current.clientY - divPos.top
+                                    x: current.clientX - divPos.left,
+                                    y: current.clientY - divPos.top
                                 })
                             }
                         />
                     ))}
                     {dragging && dragStart && (
-                        <Bezier
-                            startPoint={[dragStart.clientX, dragStart.clientY]}
-                            endPoint={[dragging.clientX, dragging.clientY]}
-                        />
+                        <Arrow startPoint={dragStart} endPoint={dragging} />
                     )}
                 </div>
             </div>

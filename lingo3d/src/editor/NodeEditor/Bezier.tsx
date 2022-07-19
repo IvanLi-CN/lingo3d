@@ -20,7 +20,10 @@ const Bezier = ({ startPoint, endPoint }: BezierProps) => {
             ref={console.log}
         >
             <path
-                d={`M ${[0, 0]} C ${controlPoint0} ${controlPoint1} ${[width, height]}`}
+                d={`M ${[0, 0]} C ${controlPoint0} ${controlPoint1} ${[
+                    width,
+                    height
+                ]}`}
                 // strokeDashoffset={p.offset}
                 // strokeDasharray={offset}
                 stroke="white"
